@@ -1,0 +1,353 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Avatar, AvatarFallback } from './ui/avatar';
+
+const regions = [
+  'Greater Accra',
+  'Ashanti',
+  'Western',
+  'Eastern',
+  'Central',
+  'Northern',
+  'Upper East',
+  'Upper West',
+  'Volta',
+  'Bono'
+];
+
+export default function HomeVisit() {
+  const [currentMonth, setCurrentMonth] = useState(new Date(2024, 11, 1)); // December 2024
+  const [selectedDate, setSelectedDate] = useState(4);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    age: '',
+    patientId: '',
+    symptoms: '',
+    region: '',
+    city: '',
+    address: '',
+    landmark: '',
+    preferredTime: ''
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+  const monthName = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  const previousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  };
+
+  const nextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-blue-500 rounded transform rotate-45"></div>
+              <span className="text-xl text-gray-900">HealthBridge</span>
+            </div>
+            <nav className="hidden md:flex items-center gap-6">
+              <Link to="/online-consultation" className="text-gray-600 hover:text-gray-900">
+                Online Consultation
+              </Link>
+              <Link to="/hospital-visit" className="text-gray-600 hover:text-gray-900">
+                Hospital Visit
+              </Link>
+              <Link to="/home-visit" className="text-blue-600 border-b-2 border-blue-600 pb-1">
+                Home Visit
+              </Link>
+              <Link to="/doctor-dashboard" className="text-gray-600 hover:text-gray-900">
+                My Appointments
+              </Link>
+              <Button className="bg-blue-500 hover:bg-blue-600">Login</Button>
+              <Avatar className="w-9 h-9">
+                <AvatarFallback className="bg-orange-400 text-white">
+                  <User className="w-5 h-5" />
+                </AvatarFallback>
+              </Avatar>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-6 py-12">
+        <div className="mb-8">
+          <h1 className="text-4xl text-gray-900 mb-2">Request a Home Visit</h1>
+          <p className="text-gray-500">Complete the steps below to schedule a doctor visit to your home.</p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left Column - Form */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Step 1: Patient Details */}
+            <Card className="bg-white">
+              <CardContent className="p-8">
+                <h2 className="text-xl text-gray-900 mb-6">Step 1: Patient Details</h2>
+                
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <Label htmlFor="fullName" className="text-gray-700 mb-2 block">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      placeholder="Enter your full name"
+                      value={formData.fullName}
+                      onChange={(e) => handleInputChange('fullName', e.target.value)}
+                      className="bg-gray-50"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone" className="text-gray-700 mb-2 block">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      placeholder="Enter your phone number"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      className="bg-gray-50"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <Label htmlFor="age" className="text-gray-700 mb-2 block">Age</Label>
+                    <Input
+                      id="age"
+                      placeholder="Enter your age"
+                      value={formData.age}
+                      onChange={(e) => handleInputChange('age', e.target.value)}
+                      className="bg-gray-50"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="patientId" className="text-gray-700 mb-2 block">Patient ID (Optional)</Label>
+                    <Input
+                      id="patientId"
+                      placeholder="If you have one"
+                      value={formData.patientId}
+                      onChange={(e) => handleInputChange('patientId', e.target.value)}
+                      className="bg-gray-50"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="symptoms" className="text-gray-700 mb-2 block">Medical Concern</Label>
+                  <Textarea
+                    id="symptoms"
+                    placeholder="Briefly describe your medical concern..."
+                    rows={4}
+                    value={formData.symptoms}
+                    onChange={(e) => handleInputChange('symptoms', e.target.value)}
+                    className="bg-gray-50"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">This will help us assign the right specialist.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Step 2: Location Details */}
+            <Card className="bg-white">
+              <CardContent className="p-8">
+                <h2 className="text-xl text-gray-900 mb-6">Step 2: Location Details</h2>
+                
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <Label htmlFor="region" className="text-gray-700 mb-2 block">Region</Label>
+                    <Select value={formData.region} onValueChange={(value) => handleInputChange('region', value)}>
+                      <SelectTrigger className="bg-gray-50">
+                        <SelectValue placeholder="Select your region" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {regions.map((region) => (
+                          <SelectItem key={region} value={region.toLowerCase().replace(/\s+/g, '-')}>
+                            {region}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="city" className="text-gray-700 mb-2 block">City/Town</Label>
+                    <Input
+                      id="city"
+                      placeholder="e.g., Accra, Kumasi"
+                      value={formData.city}
+                      onChange={(e) => handleInputChange('city', e.target.value)}
+                      className="bg-gray-50"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <Label htmlFor="address" className="text-gray-700 mb-2 block">Full Address</Label>
+                  <Textarea
+                    id="address"
+                    placeholder="House number, street name, area/neighborhood"
+                    rows={2}
+                    value={formData.address}
+                    onChange={(e) => handleInputChange('address', e.target.value)}
+                    className="bg-gray-50"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="landmark" className="text-gray-700 mb-2 block">Nearby Landmark</Label>
+                  <Input
+                    id="landmark"
+                    placeholder="e.g., Near Shell Station, Behind GCB Bank"
+                    value={formData.landmark}
+                    onChange={(e) => handleInputChange('landmark', e.target.value)}
+                    className="bg-gray-50"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">Helps our doctor locate your home easily.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Step 3: Schedule */}
+            <Card className="bg-white">
+              <CardContent className="p-8">
+                <h2 className="text-xl text-gray-900 mb-6">Step 3: Preferred Schedule</h2>
+                
+                {/* Calendar */}
+                <div className="mb-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-gray-900">{monthName}</h3>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="icon" onClick={previousMonth}>
+                        <ChevronLeft className="w-4 h-4" />
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={nextMonth}>
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-7 gap-2">
+                    {/* Day headers */}
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                      <div key={day} className="text-center text-sm text-gray-500 py-2">
+                        {day}
+                      </div>
+                    ))}
+
+                    {/* Empty cells */}
+                    {Array.from({ length: firstDayOfMonth }).map((_, idx) => (
+                      <div key={`empty-${idx}`} />
+                    ))}
+
+                    {/* Calendar days */}
+                    {Array.from({ length: daysInMonth }).map((_, idx) => {
+                      const day = idx + 1;
+                      const isSelected = day === selectedDate;
+                      const isPastMonth = day < 3;
+
+                      return (
+                        <button
+                          key={day}
+                          onClick={() => setSelectedDate(day)}
+                          disabled={isPastMonth}
+                          className={`
+                            aspect-square rounded-lg flex items-center justify-center text-sm
+                            ${isSelected ? 'bg-blue-500 text-white' : ''}
+                            ${!isSelected && !isPastMonth ? 'hover:bg-gray-100 text-gray-900' : ''}
+                            ${isPastMonth ? 'text-gray-300 cursor-not-allowed' : ''}
+                          `}
+                        >
+                          {day}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Time Preference */}
+                <div>
+                  <Label htmlFor="preferredTime" className="text-gray-700 mb-2 block">Time Preference</Label>
+                  <Select value={formData.preferredTime} onValueChange={(value) => handleInputChange('preferredTime', value)}>
+                    <SelectTrigger className="bg-gray-50">
+                      <SelectValue placeholder="Select time preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="morning">Morning (8AM - 12PM)</SelectItem>
+                      <SelectItem value="afternoon">Afternoon (12PM - 4PM)</SelectItem>
+                      <SelectItem value="evening">Evening (4PM - 7PM)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Final time will be confirmed by admin based on doctor availability.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Appointment Summary */}
+          <div className="lg:col-span-1">
+            <Card className="bg-white sticky top-6">
+              <CardContent className="p-6">
+                <h3 className="text-lg text-gray-900 mb-6">Your Appointment</h3>
+                
+                <div className="space-y-4 mb-6">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Type</span>
+                    <span className="text-gray-900">Home Visit</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Location</span>
+                    <span className="text-gray-900 capitalize">{formData.city || 'Not specified'}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Preferred Date</span>
+                    <span className="text-gray-900">Dec {selectedDate}, 2024</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Time Slot</span>
+                    <span className="text-gray-900 capitalize">{formData.preferredTime || 'Not selected'}</span>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6 mb-6">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-gray-900">Total Cost</span>
+                    <span className="text-3xl text-blue-600">Varies</span>
+                  </div>
+                  <p className="text-xs text-gray-500">Based on distance from facility</p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <p className="text-xs text-blue-800">
+                    Our admin team will call to discuss the cost based on your location, confirm doctor availability, and finalize the appointment time.
+                  </p>
+                </div>
+
+                <Button className="w-full bg-blue-500 hover:bg-blue-600 py-6">
+                  Submit Request
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
